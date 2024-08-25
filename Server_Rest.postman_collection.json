@@ -1,0 +1,244 @@
+{
+	"info": {
+		"_postman_id": "ecbf2358-a407-429e-9c2d-45be581df5db",
+		"name": "Server Rest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37899741"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const getRequest = {\r",
+							"  url: 'https://serverest.dev/usuarios',\r",
+							"  method: 'GET',\r",
+							"  header: {\r",
+							"    'accept': 'application/json',\r",
+							"  }\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(getRequest, (error, response) => {\r",
+							"    const responseData = response.json();\r",
+							"  pm.test('response should be okay to process', () => {\r",
+							"    const  qnt = responseData.quantidade\r",
+							"    if (qnt >= 1){\r",
+							"        const email= responseData.usuarios[0].email\r",
+							"        pm.environment.set(\"userEmail\", email);\r",
+							"        const pass = responseData.usuarios[0].password\r",
+							"        pm.environment.set(\"password\", pass);\r",
+							"    }\r",
+							"});\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.response.to.have.status(200);\r",
+							"const responseData = pm.response.json();\r",
+							"const  auth = responseData.authorization\r",
+							"pm.environment.set(\"token\", auth)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"{{userEmail}}\",\r\n    \"password\":\"{{password}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_URL}}/login",
+					"host": [
+						"{{base_URL}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET user list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    const responseData = pm.response.json();\r",
+							"    const  qnt = responseData.quantidade\r",
+							"    if (qnt >= 1){\r",
+							"        const email= responseData.usuarios[0].email\r",
+							"        pm.environment.set(\"userEmail\", email);\r",
+							"        const pass = responseData.usuarios[0].password\r",
+							"        pm.environment.set(\"password\", pass);\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_URL}}/usuarios",
+					"host": [
+						"{{base_URL}}"
+					],
+					"path": [
+						"usuarios"
+					]
+				},
+				"description": "Generated from cURL: curl -X 'GET' \\\r\n  'https://serverest.dev/usuarios' \\\r\n  -H 'accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"\tconst responseData = pm.response.json();\r",
+							"    const  qnt = responseData.quantidade\r",
+							"    if (qnt >= 1){\r",
+							"        const id= responseData.produtos[0]._id\r",
+							"        pm.environment.set(\"productId\", id);\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_URL}}/produtos",
+					"host": [
+						"{{base_URL}}"
+					],
+					"path": [
+						"produtos"
+					]
+				},
+				"description": "Generated from cURL: curl -X 'GET' \\\r\n  'https://serverest.dev/produtos' \\\r\n  -H 'accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get product id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_URL}}/produtos/{{productId}}",
+					"host": [
+						"{{base_URL}}"
+					],
+					"path": [
+						"produtos",
+						"{{productId}}"
+					]
+				},
+				"description": "Generated from cURL: curl -X 'GET' \\\r\n  'https://serverest.dev/produtos/BeeJh5lz3k6kSIzA' \\\r\n  -H 'accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get product id invalido",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_URL}}/produtos/inv",
+					"host": [
+						"{{base_URL}}"
+					],
+					"path": [
+						"produtos",
+						"inv"
+					]
+				},
+				"description": "Generated from cURL: curl -X 'GET' \\\r\n  'https://serverest.dev/produtos/BeeJh5lz3k6kSIzA' \\\r\n  -H 'accept: application/json'"
+			},
+			"response": []
+		}
+	]
+}
